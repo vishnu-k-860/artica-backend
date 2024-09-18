@@ -1,0 +1,3 @@
+# the files that to be ignored while uploading  to git
+node_modules
+.env
