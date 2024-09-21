@@ -3,7 +3,6 @@ const products = require('../models/productsschema')
 
  // for adding products
 exports.products = async(req,res)=>{
-    console.log("Inside product controller");
     
  try {
     const productimage = req.file.filename
@@ -35,7 +34,6 @@ exports.products = async(req,res)=>{
 
 //for display products
 exports.productdisplay = async(req,res)=>{
-    console.log("Inside display controller")
 
    try {
     const productexist = await products.find()
@@ -68,7 +66,6 @@ exports.productupdate = async(req,res)=>{
 
 //for delete products
 exports.productdelete = async(req,res)=>{
-    console.log("imside delete controller");
     
     try {
         const {id} = req.params
@@ -83,5 +80,5 @@ exports.productdelete = async(req,res)=>{
 }
 
 
-//for cart function
+
 

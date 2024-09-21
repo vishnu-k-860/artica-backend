@@ -4,6 +4,7 @@ const productController = require("../controller/productController")
 const jwtAuthorization = require("../middleware/jwtMiddleware")
 const multerconfig = require('../middleware/multerMiddleware')
 const cartController = require("../controller/cartController")
+const orderController = require('../controller/orderController')
 
 const router = new express.Router()
 //register 
@@ -27,9 +28,26 @@ router.get('/user/displayfromcart/:userid',cartController.getfromcart)
 
 //deletefromcart
 router.post('/user/deletefromcart/:userid',jwtAuthorization,cartController.removefromcart)
-module.exports = router 
+
 
 //googlelogin
 
 router.post('/user/googlelogin',userController.googleRegister)
+
+
+
+// //edit profile
+// router.put('/user/editprofile/:id',jwtAuthorization,userController.editProfile)
+
+
+//order
+router.post('/user/orderproduct/:userid',jwtAuthorization,cartController.orderproducts)
+
+
+//getorder
+router.get('/user/getorder/:userid',cartController.getorder)
+
+//getpayment
+router.post('/user/payment',orderController.payment)
+
 module.exports = router 

@@ -47,35 +47,57 @@ exports.login = async(req,res)=>{
     } 
    
 exports.googleRegister = async(req,res)=>{
-    try {
-        const{id,firstname,lastname,Email,profilepic} = req.body
-        if(!id || !firstname || !lastname || !Email){
-            res.status(400).json("Login Fialed")
+    try {        
+        const{aud,given_name,family_name,email,picture} = req.body        
+        if(!aud || !given_name || !family_name || !email){
+            res.status(400).json("Login Failed")
         }else{
-            const existuser = await users.findOne({googleid:id})
+            const existuser = await users.findOne({googleid:aud})
             if(!existuser){
                 const newuser = new users({
-                    firstname,lastname,Email,phone:"",address:"",password:"",profilepic:"",role:"",googleid:id
-                    })
-
-
+                    firstname:given_name,
+                    lastname:family_name,
+                    Email:email,
+                    phone:"",
+                    address:"",
+                    password:"",
+                    profilepic:picture,
+                    role:"",
+                    googleid:aud
+                })
                 await newuser.save()
                 const token = jwt.sign({id: newuser._id},"supersecretkey1234")
-
-                res.status(200).json({newuser,token})
-
-                
+                res.status(200).json({user:newuser,token})                
              }else{
                 const token = jwt.sign({id: existuser._id},"supersecretkey1234")
-                res.status(200).json({existuser,token})  
-
+                res.status(200).json({user:existuser,token})  
              }
-        }
-        
+        }        
     } catch (error) {
         res.status(500).json("Error in json controller")
         console.log(error);
+    }
+}
+
+
+exports.editProfile = async(req,res)=>{
+    try {
+        console.log('inside editprofile');
         
- 
+        const{id} = req.params
+        const{firstname,phonenumber,address} = req.body
+        console.log(firstname,phonenumber,address);
+        
+        if(!firstname || !phonenumber || !address){
+            alert('please log in..')
+        }else{
+            const updateprofile = await users.findByIdAndUpdate({_id:id},{firstname,phonenumber,address},{new:true})
+            await updateprofile.save()
+            res.status(200).json(updateprofile) 
+        }
+    } catch (error) {
+        res.status(500).json("Error in json controller")
+        console.log(error);
+          
     }
 }
