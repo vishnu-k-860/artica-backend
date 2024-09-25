@@ -11,9 +11,7 @@ const orderschema = new mongoose.Schema({
         type:String,
         require:true
     },
-    orders:[
-        {type:Array},
-    ],
+    orders:[],
     amount:{
         type:String,
         require: true

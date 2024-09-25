@@ -21,10 +21,10 @@ router.put('/admin/productupdate/:id',jwtAuthorization,multerconfig.single('prod
 router.delete('/admin/deleteproduct/:id',jwtAuthorization,productController.productdelete)
 
 //addtocart
-router.post('/user/addtocart/:userid',cartController.addtocarts)
+router.post('/user/addtocart/:userid',jwtAuthorization,cartController.addtocarts)
 
 //display from cart
-router.get('/user/displayfromcart/:userid',cartController.getfromcart)
+router.get('/user/displayfromcart/:userid',jwtAuthorization,cartController.getfromcart)
 
 //deletefromcart
 router.post('/user/deletefromcart/:userid',jwtAuthorization,cartController.removefromcart)
@@ -37,17 +37,33 @@ router.post('/user/googlelogin',userController.googleRegister)
 
 
 // //edit profile
-// router.put('/user/editprofile/:id',jwtAuthorization,userController.editProfile)
+router.put('/user/editprofile/:id',jwtAuthorization,userController.editProfile)
 
 
 //order
 router.post('/user/orderproduct/:userid',jwtAuthorization,cartController.orderproducts)
 
 
-//getorder
-router.get('/user/getorder/:userid',cartController.getorder)
+// //getorder
+router.get('/user/getorder/:id',cartController.getorder)
 
 //getpayment
 router.post('/user/payment',orderController.payment)
 
-module.exports = router 
+
+//emptycart
+router.delete('/user/emptycart/:id',jwtAuthorization,cartController.cartdelete)
+
+//admin display
+router.get('/admin/orderdisplay',cartController.getordertoadmin)
+
+
+//reset password
+router.post('/user/forgetpassword',userController.forgetpassword)
+
+//update password
+router.post('/user/updatepassword',userController.savepassword)
+
+//show uesers to admin
+router.get('/admin/displayusers',userController.showuser)
+module.exports = router

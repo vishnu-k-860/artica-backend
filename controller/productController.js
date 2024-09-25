@@ -72,7 +72,7 @@ exports.productdelete = async(req,res)=>{
 
         const deleteproduct = await products.findByIdAndDelete({_id:id})
         res.status(200).json(deleteproduct)
-        // console.log(deleteproduct);
+        
         
     } catch (error) {
         res.status(500).json("Error in json controller",error)    

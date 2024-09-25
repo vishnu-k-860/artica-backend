@@ -111,8 +111,8 @@ exports.orderproducts = async(req,res)=>{
 
 exports.getorder = async(req,res)=>{
     try {
-        const {userid} = req.params
-        const orderdetails = await orders.find({userid}).populate('orders.productid','producttitle productprice')
+        const {id} = req.params
+        const orderdetails = await order.find({userid:id})
         console.log(orderdetails);
         
         if(orderdetails){
@@ -126,4 +126,39 @@ exports.getorder = async(req,res)=>{
     }
 }
 
+
+exports.cartdelete = async(req,res)=>{
+    
+    try {
+        const {id} = req.params
+         
+         
+        const deleteproduct = await item.findOneAndDelete({userid:id})
+        res.status(200).json(deleteproduct)
+        console.log(deleteproduct);
+        
+    } catch (error) {
+        res.status(500).json("Error in json controller")
+        console.log(error);
+            
+    }
+}
+
+
+
+exports.getordertoadmin = async(req,res)=>{
+    try {
+        const orderdetails = await order.find()
+        console.log(orderdetails);
+        
+        if(orderdetails){
+            res.status(200).json(orderdetails)   
+        }else{
+            res.status(400).json('empty') 
+        }
+    } catch (error) {
+        res.status(500).json("Error in json controller")
+        console.log(error);
+    }
+}
 

@@ -1,6 +1,7 @@
 const users = require("../models/userschema")
 const { passwordHashing, comparepassword } = require('../helpers/authhelper')
 const jwt = require('jsonwebtoken')
+const sendemail = require("../helpers/sendmail")
 
 exports.register = async(req,res)=>{
     try {
@@ -86,18 +87,82 @@ exports.editProfile = async(req,res)=>{
         
         const{id} = req.params
         const{firstname,phonenumber,address} = req.body
+        // const uploadimage = req.file?req.file.filename:profilepic
+
         console.log(firstname,phonenumber,address);
-        
-        if(!firstname || !phonenumber || !address){
-            alert('please log in..')
-        }else{
+
             const updateprofile = await users.findByIdAndUpdate({_id:id},{firstname,phonenumber,address},{new:true})
             await updateprofile.save()
             res.status(200).json(updateprofile) 
-        }
+        
     } catch (error) {
         res.status(500).json("Error in json controller")
         console.log(error);
           
     }
+}
+
+//forget password
+
+exports.forgetpassword = async(req,res)=>{
+    const {email} = req.body
+
+    try {
+        const user = await users.findOne({Email:email})
+        if(!user){
+            res.status(404).json("user not found")
+        }else{
+            const resettoken = jwt.sign({id:user._id},"supersecretkey1234",{expiresIn:'30m'})
+            const baseurl = process.env. BASE_URL
+            const resetlink = `${baseurl}/resetpassword/${resettoken}`
+
+            await sendemail(email,resetlink,user.firstname)
+            res.status(200).json("Email sent successfully")
+        }
+    } catch (error) {
+        res.status(500).json("Error in json controller")
+        console.log(error);
+    }
+}
+
+// save password
+
+exports.savepassword = async(req,res)=>{
+    const {token , password} =req.body
+    try {
+        const decode = jwt.verify(token,"supersecretkey1234")
+        console.log(decode);
+        
+       const user = await users.findById(decode.id)
+       if(!user){
+         res.status(404).json('user not found')
+       }else{
+        const hashedpassword = await passwordHashing(password)
+        user.password = hashedpassword
+        user.save()
+        res.status(200).json('Password Updated')
+       }
+    } catch (error) {
+        if(error.name == 'TokenExpiredError'){
+            res.status(406).json("Invalid token")
+        }
+        res.status(500).json("Error in json controller")
+        console.log(error); 
+    }
+
+}
+
+exports.showuser = async(req,res)=>{
+   try {
+    
+    const user = await users.find({role :{ $ne :1}})
+    if(user == 0){
+        res.status(404).json("user not found")
+    }else{
+        res.status(200).json(user) 
+    }
+   } catch (error) {
+    res.status(500).json("Error in json controller")
+    console.log(error); 
+   } 
 }
