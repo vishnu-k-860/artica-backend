@@ -37,7 +37,7 @@ router.post('/user/googlelogin',userController.googleRegister)
 
 
 // //edit profile
-router.put('/user/editprofile/:id',jwtAuthorization,userController.editProfile)
+router.put('/user/editprofile/:id',jwtAuthorization,multerconfig.single('profilepic'),userController.editProfile)
 
 
 //order

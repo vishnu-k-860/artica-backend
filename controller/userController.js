@@ -86,12 +86,12 @@ exports.editProfile = async(req,res)=>{
         console.log('inside editprofile');
         
         const{id} = req.params
-        const{firstname,phonenumber,address} = req.body
-        // const uploadimage = req.file?req.file.filename:profilepic
+        const{firstname,phonenumber,address,profilepic} = req.body
+        const uploadimage = req.file?req.file.filename:profilepic
 
         console.log(firstname,phonenumber,address);
 
-            const updateprofile = await users.findByIdAndUpdate({_id:id},{firstname,phonenumber,address},{new:true})
+            const updateprofile = await users.findByIdAndUpdate({_id:id},{firstname,phonenumber,address,profilepic:uploadimage},{new:true})
             await updateprofile.save()
             res.status(200).json(updateprofile) 
         
@@ -101,6 +101,7 @@ exports.editProfile = async(req,res)=>{
           
     }
 }
+
 
 //forget password
 
